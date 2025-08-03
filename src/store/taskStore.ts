@@ -1,5 +1,6 @@
 import { create } from 'zustand';
 import { Task, TaskFormData, FilterType, Priority, TimeRange, TaskStats } from '@/types';
+import { database as db } from '@/lib/database';
 
 /**
  * 任务状态管理接口
@@ -11,9 +12,9 @@ interface TaskStore {
   isLoading: boolean;
   
   // 任务操作方法
-  addTask: (taskData: TaskFormData) => void;
-  updateTask: (id: string, updates: Partial<Task>) => void;
-  deleteTask: (id: string) => void;
+  addTask: (taskData: TaskFormData) => Promise<void>;
+  updateTask: (id: string, updates: Partial<Task>) => Promise<void>;
+  deleteTask: (id: string) => Promise<void>;
   toggleTaskComplete: (id: string) => void;
   toggleTask: (id: string) => void;
   
@@ -26,8 +27,9 @@ interface TaskStore {
   getTaskStats: () => TaskStats;
   
   // 数据持久化方法
-  loadTasks: () => void;
+  loadTasks: () => Promise<void>;
   saveTasks: () => void;
+  initializeTestTasks: () => Promise<void>;
 }
 
 /**
@@ -70,60 +72,104 @@ export const useTaskStore = create<TaskStore>((set, get) => ({
   /**
    * 添加新任务
    */
-  addTask: (taskData: TaskFormData) => {
-    const newTask: Task = {
-      id: generateId(),
-      title: taskData.title,
-      completed: false,
-      createdAt: new Date().toISOString(),
-      deadline: taskData.deadline,
-      priority: taskData.priority,
-      timeRange: taskData.timeRange,
-      description: taskData.description,
-    };
-    
-    set((state) => ({
-      tasks: [...state.tasks, newTask]
-    }));
-    
-    get().saveTasks();
+  addTask: async (taskData: TaskFormData) => {
+    try {
+      set({ isLoading: true });
+      
+      const newTask = await db.addTask({
+        title: taskData.title,
+        completed: false,
+        createdAt: new Date().toISOString(),
+        startDate: taskData.startDate,
+        deadline: taskData.deadline,
+        priority: taskData.priority,
+        timeRange: taskData.timeRange,
+        description: taskData.description,
+      });
+      
+      set((state) => ({
+        tasks: [...state.tasks, newTask],
+        isLoading: false
+      }));
+    } catch (error) {
+      console.error('添加任务失败:', error);
+      set({ isLoading: false });
+    }
   },
 
   /**
    * 更新任务
    */
-  updateTask: (id: string, updates: Partial<Task>) => {
-    set((state) => ({
-      tasks: state.tasks.map(task => 
-        task.id === id ? { ...task, ...updates } : task
-      )
-    }));
-    
-    get().saveTasks();
+  updateTask: async (id: string, updates: Partial<Task>) => {
+    try {
+      set({ isLoading: true });
+      
+      const updatedTask = await db.updateTask(id, updates);
+      
+      if (updatedTask) {
+        set((state) => ({
+          tasks: state.tasks.map(task => 
+            task.id === id ? updatedTask : task
+          ),
+          isLoading: false
+        }));
+      } else {
+        set({ isLoading: false });
+      }
+    } catch (error) {
+      console.error('更新任务失败:', error);
+      set({ isLoading: false });
+    }
   },
 
   /**
    * 删除任务
    */
-  deleteTask: (id: string) => {
-    set((state) => ({
-      tasks: state.tasks.filter(task => task.id !== id)
-    }));
+  deleteTask: async (id: string) => {
+    console.log('taskStore.deleteTask 被调用，任务ID:', id);
     
-    get().saveTasks();
+    try {
+      set({ isLoading: true });
+      console.log('设置加载状态为 true');
+      
+      console.log('调用数据库删除方法...');
+      const success = await db.deleteTask(id);
+      console.log('数据库删除结果:', success);
+      
+      if (success) {
+        console.log('从状态中移除任务...');
+        set((state) => {
+          const filteredTasks = state.tasks.filter(task => task.id !== id);
+          console.log('删除前任务数量:', state.tasks.length);
+          console.log('删除后任务数量:', filteredTasks.length);
+          return {
+            tasks: filteredTasks,
+            isLoading: false
+          };
+        });
+        console.log('任务删除完成');
+      } else {
+        console.warn('删除任务失败: 任务不存在');
+        set({ isLoading: false });
+      }
+    } catch (error) {
+      console.error('删除任务失败:', error);
+      set({ isLoading: false });
+    }
   },
 
   /**
    * 切换任务完成状态
    */
-  toggleTaskComplete: (id: string) => {
-    set((state) => ({
-      tasks: state.tasks.map(task => 
-        task.id === id ? { ...task, completed: !task.completed } : task
-      )
-    }));
-    
-    get().saveTasks();
+  toggleTaskComplete: async (id: string) => {
+    try {
+      const task = get().tasks.find(t => t.id === id);
+      if (!task) return;
+      
+      await get().updateTask(id, { completed: !task.completed });
+    } catch (error) {
+      console.error('切换任务状态失败:', error);
+    }
   },
 
   /**
@@ -283,18 +329,77 @@ export const useTaskStore = create<TaskStore>((set, get) => ({
   },
 
   /**
-   * 从localStorage加载任务数据
+   * 从数据库加载任务数据
    */
-  loadTasks: () => {
+  loadTasks: async () => {
     try {
-      const savedTasks = localStorage.getItem('todolist-tasks');
-      if (savedTasks) {
-        const tasks = JSON.parse(savedTasks);
-        set({ tasks });
+      set({ isLoading: true });
+      const tasks = await db.getTasks();
+      
+      // 如果没有任务数据，添加一些测试任务
+      if (tasks.length === 0) {
+        console.log('没有找到任务数据，添加测试任务...');
+        await get().initializeTestTasks();
+        const newTasks = await db.getTasks();
+        set({ tasks: newTasks, isLoading: false });
+      } else {
+        set({ tasks, isLoading: false });
       }
     } catch (error) {
       console.error('加载任务数据失败:', error);
+      set({ isLoading: false });
     }
+  },
+
+  /**
+   * 初始化测试任务数据
+   */
+  initializeTestTasks: async () => {
+    const today = new Date();
+    const todayStr = today.toISOString().split('T')[0];
+    
+    const testTasks = [
+      {
+        title: '晨间会议',
+        description: '与团队讨论今日工作安排',
+        deadline: `${todayStr}T09:00:00.000Z`,
+        priority: 'high' as Priority,
+        timeRange: TimeRange.DAY,
+        completed: false
+      },
+      {
+        title: '完成项目报告',
+        description: '整理本周项目进度并提交报告',
+        deadline: `${todayStr}T14:30:00.000Z`,
+        priority: 'medium' as Priority,
+        timeRange: TimeRange.DAY,
+        completed: false
+      },
+      {
+        title: '健身锻炼',
+        description: '30分钟有氧运动',
+        deadline: `${todayStr}T18:00:00.000Z`,
+        priority: 'low' as Priority,
+        timeRange: TimeRange.DAY,
+        completed: false
+      },
+      {
+        title: '阅读技术文档',
+        description: '学习新的前端技术',
+        deadline: `${todayStr}T20:00:00.000Z`,
+        priority: 'medium' as Priority,
+        timeRange: TimeRange.DAY,
+        completed: true
+      }
+    ];
+    
+    console.log('添加测试任务:', testTasks);
+    
+    for (const taskData of testTasks) {
+      await get().addTask(taskData);
+    }
+    
+    console.log('测试任务添加完成');
   },
 
   /**

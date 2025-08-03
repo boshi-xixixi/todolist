@@ -80,13 +80,13 @@ export const TaskFilter: React.FC = () => {
   };
 
   return (
-    <div className="bg-white rounded-lg shadow-sm p-4 mb-6">
+    <div className="bg-white dark:bg-gray-800 rounded-lg shadow-sm p-4 mb-6 border border-gray-200 dark:border-gray-700">
       <div className="flex items-center gap-2 mb-4">
-        <Filter className="w-5 h-5 text-gray-600" />
-        <h3 className="text-lg font-medium text-gray-800">筛选条件</h3>
+        <Filter className="w-5 h-5 text-gray-600 dark:text-gray-400" />
+        <h3 className="text-lg font-medium text-gray-800 dark:text-white">筛选条件</h3>
         <button
           onClick={resetFilter}
-          className="ml-auto text-sm text-blue-600 hover:text-blue-800 transition-colors"
+          className="ml-auto text-sm text-blue-600 dark:text-blue-400 hover:text-blue-800 dark:hover:text-blue-300 transition-colors"
         >
           重置
         </button>
@@ -95,14 +95,14 @@ export const TaskFilter: React.FC = () => {
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
         {/* 完成状态筛选 */}
         <div>
-          <label className="flex items-center gap-2 text-sm font-medium text-gray-700 mb-2">
+          <label className="flex items-center gap-2 text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
             <CheckCircle className="w-4 h-4" />
             完成状态
           </label>
           <select
             value={filter.type}
             onChange={(e) => updateFilter({ type: e.target.value as FilterType })}
-            className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent text-sm"
+            className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent text-sm"
           >
             <option value={FilterType.ALL}>{getFilterTypeText(FilterType.ALL)}</option>
             <option value={FilterType.PENDING}>{getFilterTypeText(FilterType.PENDING)}</option>
@@ -112,7 +112,7 @@ export const TaskFilter: React.FC = () => {
 
         {/* 时间维度筛选 */}
         <div>
-          <label className="flex items-center gap-2 text-sm font-medium text-gray-700 mb-2">
+          <label className="flex items-center gap-2 text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
             <Calendar className="w-4 h-4" />
             时间维度
           </label>
@@ -121,7 +121,7 @@ export const TaskFilter: React.FC = () => {
             onChange={(e) => updateFilter({ 
               timeRange: e.target.value ? e.target.value as TimeRange : undefined 
             })}
-            className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent text-sm"
+            className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent text-sm"
           >
             <option value="">{getTimeRangeText()}</option>
             <option value={TimeRange.DAY}>{getTimeRangeText(TimeRange.DAY)}</option>
@@ -133,7 +133,7 @@ export const TaskFilter: React.FC = () => {
 
         {/* 优先级筛选 */}
         <div>
-          <label className="flex items-center gap-2 text-sm font-medium text-gray-700 mb-2">
+          <label className="flex items-center gap-2 text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
             <Flag className="w-4 h-4" />
             优先级
           </label>
@@ -142,7 +142,7 @@ export const TaskFilter: React.FC = () => {
             onChange={(e) => updateFilter({ 
               priority: e.target.value ? e.target.value as Priority : undefined 
             })}
-            className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent text-sm"
+            className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent text-sm"
           >
             <option value="">{getPriorityText()}</option>
             <option value={Priority.HIGH}>{getPriorityText(Priority.HIGH)}</option>
@@ -153,13 +153,13 @@ export const TaskFilter: React.FC = () => {
       </div>
 
       {/* 当前筛选状态显示 */}
-      <div className="mt-4 pt-4 border-t border-gray-200">
+      <div className="mt-4 pt-4 border-t border-gray-200 dark:border-gray-600">
         <div className="flex flex-wrap items-center gap-2">
-          <span className="text-sm text-gray-600">当前筛选：</span>
+          <span className="text-sm text-gray-600 dark:text-gray-400">当前筛选：</span>
           
           {/* 完成状态标签 */}
           {filter.type !== FilterType.ALL && (
-            <span className="inline-flex items-center gap-1 px-2 py-1 text-xs font-medium text-blue-700 bg-blue-100 rounded-full">
+            <span className="inline-flex items-center gap-1 px-2 py-1 text-xs font-medium text-blue-700 dark:text-blue-300 bg-blue-100 dark:bg-blue-900/30 rounded-full">
               <CheckCircle className="w-3 h-3" />
               {getFilterTypeText(filter.type)}
             </span>
@@ -167,7 +167,7 @@ export const TaskFilter: React.FC = () => {
           
           {/* 时间维度标签 */}
           {filter.timeRange && (
-            <span className="inline-flex items-center gap-1 px-2 py-1 text-xs font-medium text-purple-700 bg-purple-100 rounded-full">
+            <span className="inline-flex items-center gap-1 px-2 py-1 text-xs font-medium text-purple-700 dark:text-purple-300 bg-purple-100 dark:bg-purple-900/30 rounded-full">
               <Calendar className="w-3 h-3" />
               {getTimeRangeText(filter.timeRange)}
             </span>
@@ -177,10 +177,10 @@ export const TaskFilter: React.FC = () => {
           {filter.priority && (
             <span className={`inline-flex items-center gap-1 px-2 py-1 text-xs font-medium rounded-full ${
               filter.priority === Priority.HIGH
-                ? 'text-red-700 bg-red-100'
+                ? 'text-red-700 dark:text-red-300 bg-red-100 dark:bg-red-900/30'
                 : filter.priority === Priority.MEDIUM
-                  ? 'text-yellow-700 bg-yellow-100'
-                  : 'text-green-700 bg-green-100'
+                  ? 'text-yellow-700 dark:text-yellow-300 bg-yellow-100 dark:bg-yellow-900/30'
+                  : 'text-green-700 dark:text-green-300 bg-green-100 dark:bg-green-900/30'
             }`}>
               <Flag className="w-3 h-3" />
               {getPriorityText(filter.priority)}
@@ -189,7 +189,7 @@ export const TaskFilter: React.FC = () => {
           
           {/* 无筛选条件时的提示 */}
           {filter.type === FilterType.ALL && !filter.timeRange && !filter.priority && (
-            <span className="text-xs text-gray-500">显示全部任务</span>
+            <span className="text-xs text-gray-500 dark:text-gray-400">显示全部任务</span>
           )}
         </div>
       </div>

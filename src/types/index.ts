@@ -14,7 +14,13 @@ export enum TimeRange {
   DAY = 'day',
   WEEK = 'week',
   MONTH = 'month',
-  YEAR = 'year'
+  YEAR = 'year',
+  TODAY = 'today',
+  TOMORROW = 'tomorrow',
+  THIS_WEEK = 'thisWeek',
+  NEXT_WEEK = 'nextWeek',
+  THIS_MONTH = 'thisMonth',
+  NEXT_MONTH = 'nextMonth'
 }
 
 /**
@@ -39,6 +45,7 @@ export interface Task {
   title: string;
   completed: boolean;
   createdAt: string;
+  startDate?: string;
   deadline?: string;
   priority: Priority;
   timeRange: TimeRange;
@@ -50,6 +57,7 @@ export interface Task {
  */
 export interface TaskFormData {
   title: string;
+  startDate?: string;
   deadline?: string;
   priority: Priority;
   timeRange: TimeRange;
@@ -68,3 +76,6 @@ export interface TaskStats {
   byTimeRange: Record<TimeRange, { total: number; completed: number }>;
   byPriority: Record<Priority, { total: number; completed: number }>;
 }
+
+// 导出特殊日期相关类型
+export * from './specialDate';

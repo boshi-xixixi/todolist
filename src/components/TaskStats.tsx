@@ -118,6 +118,13 @@ export const TaskStats: React.FC = () => {
   const completionRate = getCompletionRate();
 
   /**
+   * 获取当前主题是否为深色模式
+   */
+  const isDarkMode = () => {
+    return document.documentElement.classList.contains('dark');
+  };
+
+  /**
    * 初始化饼图
    */
   const initPieChart = () => {
@@ -130,6 +137,8 @@ export const TaskStats: React.FC = () => {
       { name: '已逾期', value: stats.overdue }
     ].filter(item => item.value > 0);
     
+    const darkMode = isDarkMode();
+    
     const option = {
       title: {
         text: '任务状态分布',
@@ -138,16 +147,16 @@ export const TaskStats: React.FC = () => {
         textStyle: {
           fontSize: 18,
           fontWeight: '600',
-          color: '#374151'
+          color: darkMode ? '#f3f4f6' : '#374151'
         }
       },
       tooltip: {
         trigger: 'item',
-        backgroundColor: 'rgba(255, 255, 255, 0.95)',
-        borderColor: '#e5e7eb',
+        backgroundColor: darkMode ? 'rgba(31, 41, 55, 0.95)' : 'rgba(255, 255, 255, 0.95)',
+        borderColor: darkMode ? '#4b5563' : '#e5e7eb',
         borderWidth: 1,
         textStyle: {
-          color: '#374151'
+          color: darkMode ? '#f3f4f6' : '#374151'
         },
         formatter: '{b}: {c} 个 ({d}%)'
       },
@@ -156,7 +165,7 @@ export const TaskStats: React.FC = () => {
         bottom: 20,
         left: 'center',
         textStyle: {
-          color: '#6b7280',
+          color: darkMode ? '#9ca3af' : '#6b7280',
           fontSize: 12
         },
         itemGap: 20
@@ -180,7 +189,7 @@ export const TaskStats: React.FC = () => {
           position: 'outside',
           formatter: '{b}\n{d}%',
           fontSize: 12,
-          color: '#374151'
+          color: darkMode ? '#d1d5db' : '#374151'
         },
         labelLine: {
           show: true,
@@ -232,6 +241,8 @@ export const TaskStats: React.FC = () => {
     if (!timeRangeChartRef.current) return;
     
     const chart = echarts.init(timeRangeChartRef.current);
+    const darkMode = isDarkMode();
+    
     const option = {
       title: {
         text: '按时间维度统计',
@@ -240,21 +251,21 @@ export const TaskStats: React.FC = () => {
         textStyle: {
           fontSize: 18,
           fontWeight: '600',
-          color: '#374151'
+          color: darkMode ? '#f3f4f6' : '#374151'
         }
       },
       tooltip: {
         trigger: 'axis',
-        backgroundColor: 'rgba(255, 255, 255, 0.95)',
-        borderColor: '#e5e7eb',
+        backgroundColor: darkMode ? 'rgba(31, 41, 55, 0.95)' : 'rgba(255, 255, 255, 0.95)',
+        borderColor: darkMode ? '#4b5563' : '#e5e7eb',
         borderWidth: 1,
         textStyle: {
-          color: '#374151'
+          color: darkMode ? '#f3f4f6' : '#374151'
         },
         axisPointer: {
           type: 'shadow',
           shadowStyle: {
-            color: 'rgba(0, 0, 0, 0.1)'
+            color: darkMode ? 'rgba(255, 255, 255, 0.1)' : 'rgba(0, 0, 0, 0.1)'
           }
         }
       },
@@ -262,7 +273,7 @@ export const TaskStats: React.FC = () => {
         data: ['已完成', '待完成'],
         top: 50,
         textStyle: {
-          color: '#6b7280'
+          color: darkMode ? '#9ca3af' : '#6b7280'
         }
       },
       grid: {
@@ -277,21 +288,21 @@ export const TaskStats: React.FC = () => {
         data: ['日任务', '周任务', '月任务', '年任务'],
         axisLine: {
           lineStyle: {
-            color: '#e5e7eb'
+            color: darkMode ? '#4b5563' : '#e5e7eb'
           }
         },
         axisTick: {
           show: false
         },
         axisLabel: {
-          color: '#6b7280',
+          color: darkMode ? '#9ca3af' : '#6b7280',
           fontSize: 12
         }
       },
       yAxis: {
         type: 'value',
         axisLabel: {
-          color: '#6b7280'
+          color: darkMode ? '#9ca3af' : '#6b7280'
         },
         axisLine: {
           show: false
@@ -301,7 +312,7 @@ export const TaskStats: React.FC = () => {
         },
         splitLine: {
           lineStyle: {
-            color: '#f3f4f6',
+            color: darkMode ? '#374151' : '#f3f4f6',
             type: 'dashed'
           }
         }
@@ -365,6 +376,8 @@ export const TaskStats: React.FC = () => {
     if (!priorityChartRef.current) return;
     
     const chart = echarts.init(priorityChartRef.current);
+    const darkMode = isDarkMode();
+    
     const option = {
       title: {
         text: '按优先级统计',
@@ -373,21 +386,21 @@ export const TaskStats: React.FC = () => {
         textStyle: {
           fontSize: 18,
           fontWeight: '600',
-          color: '#374151'
+          color: darkMode ? '#f3f4f6' : '#374151'
         }
       },
       tooltip: {
         trigger: 'axis',
-        backgroundColor: 'rgba(255, 255, 255, 0.95)',
-        borderColor: '#e5e7eb',
+        backgroundColor: darkMode ? 'rgba(31, 41, 55, 0.95)' : 'rgba(255, 255, 255, 0.95)',
+        borderColor: darkMode ? '#4b5563' : '#e5e7eb',
         borderWidth: 1,
         textStyle: {
-          color: '#374151'
+          color: darkMode ? '#f3f4f6' : '#374151'
         },
         axisPointer: {
           type: 'shadow',
           shadowStyle: {
-            color: 'rgba(0, 0, 0, 0.1)'
+            color: darkMode ? 'rgba(255, 255, 255, 0.1)' : 'rgba(0, 0, 0, 0.1)'
           }
         }
       },
@@ -395,7 +408,7 @@ export const TaskStats: React.FC = () => {
         data: ['已完成', '待完成'],
         top: 50,
         textStyle: {
-          color: '#6b7280'
+          color: darkMode ? '#9ca3af' : '#6b7280'
         }
       },
       grid: {
@@ -410,21 +423,21 @@ export const TaskStats: React.FC = () => {
         data: ['高优先级', '中优先级', '低优先级'],
         axisLine: {
           lineStyle: {
-            color: '#e5e7eb'
+            color: darkMode ? '#4b5563' : '#e5e7eb'
           }
         },
         axisTick: {
           show: false
         },
         axisLabel: {
-          color: '#6b7280',
+          color: darkMode ? '#9ca3af' : '#6b7280',
           fontSize: 12
         }
       },
       yAxis: {
         type: 'value',
         axisLabel: {
-          color: '#6b7280'
+          color: darkMode ? '#9ca3af' : '#6b7280'
         },
         axisLine: {
           show: false
@@ -434,7 +447,7 @@ export const TaskStats: React.FC = () => {
         },
         splitLine: {
           lineStyle: {
-            color: '#f3f4f6',
+            color: darkMode ? '#374151' : '#f3f4f6',
             type: 'dashed'
           }
         }
@@ -496,6 +509,7 @@ export const TaskStats: React.FC = () => {
     if (!trendChartRef.current) return;
     
     const chart = echarts.init(trendChartRef.current);
+    const darkMode = isDarkMode();
     
     const option = {
       title: {
@@ -504,16 +518,16 @@ export const TaskStats: React.FC = () => {
         textStyle: {
           fontSize: 16,
           fontWeight: '500',
-          color: '#374151'
+          color: darkMode ? '#f3f4f6' : '#374151'
         }
       },
       tooltip: {
         trigger: 'axis',
-        backgroundColor: 'rgba(255, 255, 255, 0.95)',
-        borderColor: '#e5e7eb',
+        backgroundColor: darkMode ? 'rgba(31, 41, 55, 0.95)' : 'rgba(255, 255, 255, 0.95)',
+        borderColor: darkMode ? '#4b5563' : '#e5e7eb',
         borderWidth: 1,
         textStyle: {
-          color: '#374151'
+          color: darkMode ? '#f3f4f6' : '#374151'
         },
         formatter: function(params: any) {
           const data = params[0];
@@ -532,14 +546,14 @@ export const TaskStats: React.FC = () => {
         data: realStats.dailyCompletionTrend.map(item => item.date),
         axisLine: {
           lineStyle: {
-            color: '#e5e7eb'
+            color: darkMode ? '#4b5563' : '#e5e7eb'
           }
         },
         axisTick: {
           show: false
         },
         axisLabel: {
-          color: '#6b7280'
+          color: darkMode ? '#9ca3af' : '#6b7280'
         }
       },
       yAxis: {
@@ -548,7 +562,7 @@ export const TaskStats: React.FC = () => {
         max: 100,
         axisLabel: {
           formatter: '{value}%',
-          color: '#6b7280'
+          color: darkMode ? '#9ca3af' : '#6b7280'
         },
         axisLine: {
           show: false
@@ -558,7 +572,7 @@ export const TaskStats: React.FC = () => {
         },
         splitLine: {
           lineStyle: {
-            color: '#f3f4f6',
+            color: darkMode ? '#374151' : '#f3f4f6',
             type: 'dashed'
           }
         }
@@ -607,6 +621,7 @@ export const TaskStats: React.FC = () => {
     if (!creationTrendRef.current) return;
     
     const chart = echarts.init(creationTrendRef.current);
+    const darkMode = isDarkMode();
     
     const option = {
       title: {
@@ -615,16 +630,16 @@ export const TaskStats: React.FC = () => {
         textStyle: {
           fontSize: 16,
           fontWeight: '500',
-          color: '#374151'
+          color: darkMode ? '#f3f4f6' : '#374151'
         }
       },
       tooltip: {
         trigger: 'axis',
-        backgroundColor: 'rgba(255, 255, 255, 0.95)',
-        borderColor: '#e5e7eb',
+        backgroundColor: darkMode ? 'rgba(31, 41, 55, 0.95)' : 'rgba(255, 255, 255, 0.95)',
+        borderColor: darkMode ? '#4b5563' : '#e5e7eb',
         borderWidth: 1,
         textStyle: {
-          color: '#374151'
+          color: darkMode ? '#f3f4f6' : '#374151'
         },
         formatter: '{b}: {c} 个任务'
       },
@@ -639,21 +654,21 @@ export const TaskStats: React.FC = () => {
         data: realStats.creationTrend.map(item => item.date),
         axisLine: {
           lineStyle: {
-            color: '#e5e7eb'
+            color: darkMode ? '#4b5563' : '#e5e7eb'
           }
         },
         axisTick: {
           show: false
         },
         axisLabel: {
-          color: '#6b7280'
+          color: darkMode ? '#9ca3af' : '#6b7280'
         }
       },
       yAxis: {
         type: 'value',
         axisLabel: {
           formatter: '{value}',
-          color: '#6b7280'
+          color: darkMode ? '#9ca3af' : '#6b7280'
         },
         axisLine: {
           show: false
@@ -663,7 +678,7 @@ export const TaskStats: React.FC = () => {
         },
         splitLine: {
           lineStyle: {
-            color: '#f3f4f6',
+            color: darkMode ? '#374151' : '#f3f4f6',
             type: 'dashed'
           }
         }
@@ -739,10 +754,10 @@ export const TaskStats: React.FC = () => {
    * 空数据状态组件
    */
   const EmptyState = () => (
-    <div className="flex flex-col items-center justify-center py-16 text-gray-500">
-      <Activity className="w-16 h-16 mb-4 text-gray-300" />
-      <h3 className="text-lg font-medium mb-2">暂无任务数据</h3>
-      <p className="text-sm text-center max-w-md">
+    <div className="flex flex-col items-center justify-center py-16 text-gray-500 dark:text-gray-400">
+      <Activity className="w-16 h-16 mb-4 text-gray-300 dark:text-gray-600" />
+      <h3 className="text-lg font-medium mb-2 text-gray-900 dark:text-gray-100">暂无任务数据</h3>
+      <p className="text-sm text-center max-w-md text-gray-600 dark:text-gray-400">
         开始创建您的第一个任务，我们将为您展示详细的统计分析
       </p>
     </div>
@@ -751,9 +766,9 @@ export const TaskStats: React.FC = () => {
   // 如果没有任务数据，显示空状态
   if (stats.total === 0) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-purple-50 p-6">
+      <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-purple-50 dark:from-gray-900 dark:via-gray-800 dark:to-gray-900 p-6">
         <div className="max-w-7xl mx-auto">
-          <div className="bg-white rounded-2xl shadow-xl border border-gray-100">
+          <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-xl border border-gray-100 dark:border-gray-700">
             <EmptyState />
           </div>
         </div>
@@ -764,7 +779,7 @@ export const TaskStats: React.FC = () => {
 
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-purple-50 p-6">
+    <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-purple-50 dark:from-gray-900 dark:via-gray-800 dark:to-gray-900 p-6">
       <div className="max-w-7xl mx-auto space-y-8">
         {/* 页面标题 */}
         <div className="text-center mb-8">
@@ -776,62 +791,62 @@ export const TaskStats: React.FC = () => {
               任务统计分析
             </h1>
           </div>
-          <p className="text-gray-600 text-lg">深入了解您的任务完成情况和工作效率</p>
+          <p className="text-gray-600 dark:text-gray-300 text-lg">深入了解您的任务完成情况和工作效率</p>
         </div>
 
         {/* 核心指标卡片 */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
           {/* 总任务数 */}
-          <div className="bg-white rounded-2xl shadow-xl border border-gray-100 p-6 hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-1">
+          <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-xl border border-gray-100 dark:border-gray-700 p-6 hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-1">
             <div className="flex items-center justify-between mb-4">
               <div className="p-3 bg-gradient-to-r from-blue-500 to-blue-600 rounded-xl">
                 <Target className="w-6 h-6 text-white" />
               </div>
               <div className="text-right">
-                <div className="text-3xl font-bold text-gray-800">{stats.total}</div>
-                <div className="text-sm text-gray-500">总任务</div>
+                <div className="text-3xl font-bold text-gray-800 dark:text-gray-100">{stats.total}</div>
+                <div className="text-sm text-gray-500 dark:text-gray-400">总任务</div>
               </div>
             </div>
             <div className="h-1 bg-gradient-to-r from-blue-500 to-blue-600 rounded-full"></div>
           </div>
 
           {/* 已完成任务 */}
-          <div className="bg-white rounded-2xl shadow-xl border border-gray-100 p-6 hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-1">
+          <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-xl border border-gray-100 dark:border-gray-700 p-6 hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-1">
             <div className="flex items-center justify-between mb-4">
               <div className="p-3 bg-gradient-to-r from-emerald-500 to-green-600 rounded-xl">
                 <CheckCircle className="w-6 h-6 text-white" />
               </div>
               <div className="text-right">
-                <div className="text-3xl font-bold text-gray-800">{stats.completed}</div>
-                <div className="text-sm text-gray-500">已完成</div>
+                <div className="text-3xl font-bold text-gray-800 dark:text-gray-100">{stats.completed}</div>
+                <div className="text-sm text-gray-500 dark:text-gray-400">已完成</div>
               </div>
             </div>
             <div className="h-1 bg-gradient-to-r from-emerald-500 to-green-600 rounded-full"></div>
           </div>
 
           {/* 待完成任务 */}
-          <div className="bg-white rounded-2xl shadow-xl border border-gray-100 p-6 hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-1">
+          <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-xl border border-gray-100 dark:border-gray-700 p-6 hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-1">
             <div className="flex items-center justify-between mb-4">
               <div className="p-3 bg-gradient-to-r from-amber-500 to-orange-500 rounded-xl">
                 <Clock className="w-6 h-6 text-white" />
               </div>
               <div className="text-right">
-                <div className="text-3xl font-bold text-gray-800">{stats.pending}</div>
-                <div className="text-sm text-gray-500">待完成</div>
+                <div className="text-3xl font-bold text-gray-800 dark:text-gray-100">{stats.pending}</div>
+                <div className="text-sm text-gray-500 dark:text-gray-400">待完成</div>
               </div>
             </div>
             <div className="h-1 bg-gradient-to-r from-amber-500 to-orange-500 rounded-full"></div>
           </div>
 
           {/* 逾期任务 */}
-          <div className="bg-white rounded-2xl shadow-xl border border-gray-100 p-6 hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-1">
+          <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-xl border border-gray-100 dark:border-gray-700 p-6 hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-1">
             <div className="flex items-center justify-between mb-4">
               <div className="p-3 bg-gradient-to-r from-red-500 to-pink-500 rounded-xl">
                 <AlertTriangle className="w-6 h-6 text-white" />
               </div>
               <div className="text-right">
-                <div className="text-3xl font-bold text-gray-800">{stats.overdue}</div>
-                <div className="text-sm text-gray-500">已逾期</div>
+                <div className="text-3xl font-bold text-gray-800 dark:text-gray-100">{stats.overdue}</div>
+                <div className="text-sm text-gray-500 dark:text-gray-400">已逾期</div>
               </div>
             </div>
             <div className="h-1 bg-gradient-to-r from-red-500 to-pink-500 rounded-full"></div>
@@ -841,25 +856,25 @@ export const TaskStats: React.FC = () => {
         {/* 完成率和平均完成时间 */}
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
           {/* 完成率进度 */}
-          <div className="bg-white rounded-2xl shadow-xl border border-gray-100 p-8">
+          <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-xl border border-gray-100 dark:border-gray-700 p-8">
             <div className="flex items-center gap-3 mb-6">
-              <Award className="w-6 h-6 text-purple-600" />
-              <h3 className="text-xl font-semibold text-gray-800">整体完成率</h3>
+              <Award className="w-6 h-6 text-purple-600 dark:text-purple-400" />
+              <h3 className="text-xl font-semibold text-gray-800 dark:text-gray-100">整体完成率</h3>
             </div>
             <div className="text-center mb-6">
               <div className={`text-5xl font-bold mb-2 ${getCompletionRateColor(completionRate)}`}>
                 {completionRate}%
               </div>
-              <p className="text-gray-600">当前完成进度</p>
+              <p className="text-gray-600 dark:text-gray-300">当前完成进度</p>
             </div>
             <div className="relative">
-              <div className="w-full bg-gray-200 rounded-full h-4 overflow-hidden">
+              <div className="w-full bg-gray-200 dark:bg-gray-700 rounded-full h-4 overflow-hidden">
                 <div
                   className={`h-4 rounded-full transition-all duration-1000 ease-out ${getProgressBarColor(completionRate)}`}
                   style={{ width: `${completionRate}%` }}
                 ></div>
               </div>
-              <div className="flex justify-between text-sm text-gray-500 mt-2">
+              <div className="flex justify-between text-sm text-gray-500 dark:text-gray-400 mt-2">
                 <span>0%</span>
                 <span>50%</span>
                 <span>100%</span>
@@ -868,18 +883,18 @@ export const TaskStats: React.FC = () => {
           </div>
 
           {/* 平均完成时间 */}
-          <div className="bg-white rounded-2xl shadow-xl border border-gray-100 p-8">
+          <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-xl border border-gray-100 dark:border-gray-700 p-8">
             <div className="flex items-center gap-3 mb-6">
-              <Calendar className="w-6 h-6 text-indigo-600" />
-              <h3 className="text-xl font-semibold text-gray-800">平均完成时间</h3>
+              <Calendar className="w-6 h-6 text-indigo-600 dark:text-indigo-400" />
+              <h3 className="text-xl font-semibold text-gray-800 dark:text-gray-100">平均完成时间</h3>
             </div>
             <div className="text-center">
-              <div className="text-5xl font-bold text-indigo-600 mb-2">
+              <div className="text-5xl font-bold text-indigo-600 dark:text-indigo-400 mb-2">
                 {realStats.avgCompletionTime}
               </div>
-              <p className="text-gray-600 mb-4">天</p>
-              <div className="bg-indigo-50 rounded-xl p-4">
-                <p className="text-sm text-indigo-700">
+              <p className="text-gray-600 dark:text-gray-300 mb-4">天</p>
+              <div className="bg-indigo-50 dark:bg-indigo-900/20 rounded-xl p-4">
+                <p className="text-sm text-indigo-700 dark:text-indigo-300">
                   基于已完成任务的平均用时计算
                 </p>
               </div>
@@ -890,28 +905,28 @@ export const TaskStats: React.FC = () => {
         {/* 图表区域 */}
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
           {/* 任务分布饼图 */}
-          <div className="bg-white rounded-2xl shadow-xl border border-gray-100 p-6">
+          <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-xl border border-gray-100 dark:border-gray-700 p-6">
             <div className="h-96" ref={pieChartRef}></div>
           </div>
 
           {/* 时间维度统计 */}
-          <div className="bg-white rounded-2xl shadow-xl border border-gray-100 p-6">
+          <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-xl border border-gray-100 dark:border-gray-700 p-6">
             <div className="h-96" ref={timeRangeChartRef}></div>
           </div>
 
           {/* 优先级统计 */}
-          <div className="bg-white rounded-2xl shadow-xl border border-gray-100 p-6">
+          <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-xl border border-gray-100 dark:border-gray-700 p-6">
             <div className="h-96" ref={priorityChartRef}></div>
           </div>
 
           {/* 完成率趋势 */}
-          <div className="bg-white rounded-2xl shadow-xl border border-gray-100 p-6">
+          <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-xl border border-gray-100 dark:border-gray-700 p-6">
             <div className="h-96" ref={trendChartRef}></div>
           </div>
         </div>
 
         {/* 任务创建趋势 */}
-        <div className="bg-white rounded-2xl shadow-xl border border-gray-100 p-6">
+        <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-xl border border-gray-100 dark:border-gray-700 p-6">
           <div className="h-96" ref={creationTrendRef}></div>
         </div>
       </div>

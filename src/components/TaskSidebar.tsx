@@ -1,14 +1,16 @@
 import React, { useState } from 'react';
-import { Calendar, Clock, CalendarDays, CalendarRange, BarChart3, Eye } from 'lucide-react';
+import { Calendar, Clock, CalendarDays, CalendarRange, BarChart3, Eye, CalendarCheck, Heart, BookOpen } from 'lucide-react';
+import { useNavigate } from 'react-router-dom';
 import { TimeRange, Task } from '@/types';
 import { useTaskStore } from '@/store/taskStore';
 import { TaskDetailModal } from './TaskDetailModal';
+import { ThemeToggleSimple } from './ThemeToggle';
 
 interface TaskSidebarProps {
   activeTimeRange: TimeRange | null;
   onTimeRangeChange: (timeRange: TimeRange | null) => void;
-  activeTab: 'tasks' | 'stats';
-  onTabChange: (tab: 'tasks' | 'stats') => void;
+  activeTab: 'tasks' | 'stats' | 'today';
+  onTabChange: (tab: 'tasks' | 'stats' | 'today') => void;
 }
 
 /**
@@ -20,6 +22,7 @@ export const TaskSidebar: React.FC<TaskSidebarProps> = ({
   activeTab,
   onTabChange,
 }) => {
+  const navigate = useNavigate();
   const { getTaskStats, getTasksByTimeRange, tasks } = useTaskStore();
   const stats = getTaskStats();
   const [showTaskModal, setShowTaskModal] = useState(false);
@@ -75,12 +78,12 @@ export const TaskSidebar: React.FC<TaskSidebarProps> = ({
    */
   const getActiveBackgroundClass = (color: string) => {
     switch (color) {
-      case 'blue': return 'bg-blue-50 border border-blue-200';
-      case 'green': return 'bg-green-50 border border-green-200';
-      case 'purple': return 'bg-purple-50 border border-purple-200';
-      case 'indigo': return 'bg-indigo-50 border border-indigo-200';
-      case 'orange': return 'bg-orange-50 border border-orange-200';
-      default: return 'bg-gray-50 border border-gray-200';
+      case 'blue': return 'bg-blue-50 dark:bg-blue-900/30 border border-blue-200 dark:border-blue-700';
+      case 'green': return 'bg-green-50 dark:bg-green-900/30 border border-green-200 dark:border-green-700';
+      case 'purple': return 'bg-purple-50 dark:bg-purple-900/30 border border-purple-200 dark:border-purple-700';
+      case 'indigo': return 'bg-indigo-50 dark:bg-indigo-900/30 border border-indigo-200 dark:border-indigo-700';
+      case 'orange': return 'bg-orange-50 dark:bg-orange-900/30 border border-orange-200 dark:border-orange-700';
+      default: return 'bg-gray-50 dark:bg-gray-800 border border-gray-200 dark:border-gray-700';
     }
   };
 
@@ -89,12 +92,12 @@ export const TaskSidebar: React.FC<TaskSidebarProps> = ({
    */
   const getActiveTextClass = (color: string) => {
     switch (color) {
-      case 'blue': return 'text-blue-700';
-      case 'green': return 'text-green-700';
-      case 'purple': return 'text-purple-700';
-      case 'indigo': return 'text-indigo-700';
-      case 'orange': return 'text-orange-700';
-      default: return 'text-gray-700';
+      case 'blue': return 'text-blue-700 dark:text-blue-300';
+      case 'green': return 'text-green-700 dark:text-green-300';
+      case 'purple': return 'text-purple-700 dark:text-purple-300';
+      case 'indigo': return 'text-indigo-700 dark:text-indigo-300';
+      case 'orange': return 'text-orange-700 dark:text-orange-300';
+      default: return 'text-gray-700 dark:text-gray-300';
     }
   };
 
@@ -103,12 +106,12 @@ export const TaskSidebar: React.FC<TaskSidebarProps> = ({
    */
   const getActiveButtonClass = (color: string) => {
     switch (color) {
-      case 'blue': return 'text-blue-600 hover:bg-blue-100';
-      case 'green': return 'text-green-600 hover:bg-green-100';
-      case 'purple': return 'text-purple-600 hover:bg-purple-100';
-      case 'indigo': return 'text-indigo-600 hover:bg-indigo-100';
-      case 'orange': return 'text-orange-600 hover:bg-orange-100';
-      default: return 'text-gray-600 hover:bg-gray-100';
+      case 'blue': return 'text-blue-600 dark:text-blue-400 hover:bg-blue-100 dark:hover:bg-blue-800/50';
+      case 'green': return 'text-green-600 dark:text-green-400 hover:bg-green-100 dark:hover:bg-green-800/50';
+      case 'purple': return 'text-purple-600 dark:text-purple-400 hover:bg-purple-100 dark:hover:bg-purple-800/50';
+      case 'indigo': return 'text-indigo-600 dark:text-indigo-400 hover:bg-indigo-100 dark:hover:bg-indigo-800/50';
+      case 'orange': return 'text-orange-600 dark:text-orange-400 hover:bg-orange-100 dark:hover:bg-orange-800/50';
+      default: return 'text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-700';
     }
   };
 
@@ -157,6 +160,21 @@ export const TaskSidebar: React.FC<TaskSidebarProps> = ({
       icon: Calendar,
     },
     {
+      key: 'today' as const,
+      label: '今日任务',
+      icon: CalendarDays,
+    },
+    {
+      key: 'special-dates' as const,
+      label: '特殊日',
+      icon: Heart,
+    },
+    {
+      key: 'notes' as const,
+      label: '记事本',
+      icon: BookOpen,
+    },
+    {
       key: 'stats' as const,
       label: '统计分析',
       icon: BarChart3,
@@ -164,16 +182,19 @@ export const TaskSidebar: React.FC<TaskSidebarProps> = ({
   ];
 
   return (
-    <div className="w-64 bg-white shadow-sm border-r border-gray-200 h-full">
+    <div className="w-64 bg-white dark:bg-gray-900 shadow-sm border-r border-gray-200 dark:border-gray-700 h-full">
       {/* 侧边栏头部 */}
-      <div className="p-4 border-b border-gray-200">
-        <h2 className="text-lg font-semibold text-gray-900">TodoList</h2>
-        <p className="text-sm text-gray-600">任务管理系统</p>
+      <div className="p-4 border-b border-gray-200 dark:border-gray-700">
+        <div className="flex items-center justify-between mb-2">
+          <h2 className="text-lg font-semibold text-gray-900 dark:text-white">TodoList</h2>
+          <ThemeToggleSimple />
+        </div>
+        <p className="text-sm text-gray-600 dark:text-gray-400">任务管理系统</p>
       </div>
 
       {/* 主要导航 */}
       <div className="p-4">
-        <h3 className="text-xs font-medium text-gray-500 uppercase tracking-wider mb-3">
+        <h3 className="text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider mb-3">
           主要功能
         </h3>
         <div className="space-y-1">
@@ -183,11 +204,21 @@ export const TaskSidebar: React.FC<TaskSidebarProps> = ({
             return (
               <button
                 key={item.key}
-                onClick={() => onTabChange(item.key)}
+                onClick={() => {
+                  if (item.key === 'today') {
+                    navigate('/today');
+                  } else if (item.key === 'special-dates') {
+                    navigate('/special-dates');
+                  } else if (item.key === 'notes') {
+                    navigate('/notes');
+                  } else {
+                    onTabChange(item.key);
+                  }
+                }}
                 className={`w-full flex items-center gap-3 px-3 py-2 text-sm font-medium rounded-lg transition-colors ${
                   isActive
-                    ? 'bg-blue-50 text-blue-700 border border-blue-200'
-                    : 'text-gray-700 hover:bg-gray-50 hover:text-gray-900'
+                    ? 'bg-blue-50 dark:bg-blue-900/30 text-blue-700 dark:text-blue-300 border border-blue-200 dark:border-blue-700'
+                    : 'text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-800 hover:text-gray-900 dark:hover:text-white'
                 }`}
               >
                 <Icon className="w-4 h-4" />
@@ -200,8 +231,8 @@ export const TaskSidebar: React.FC<TaskSidebarProps> = ({
 
       {/* 任务分类 */}
       {activeTab === 'tasks' && (
-        <div className="p-4 border-t border-gray-200">
-          <h3 className="text-xs font-medium text-gray-500 uppercase tracking-wider mb-3">
+        <div className="p-4 border-t border-gray-200 dark:border-gray-700">
+          <h3 className="text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider mb-3">
             任务分类
           </h3>
           <div className="space-y-1">
@@ -217,7 +248,7 @@ export const TaskSidebar: React.FC<TaskSidebarProps> = ({
                   className={`flex items-center gap-1 rounded-lg ${
                     isActive
                       ? getActiveBackgroundClass(item.color)
-                      : 'hover:bg-gray-50'
+                      : 'hover:bg-gray-50 dark:hover:bg-gray-800'
                   }`}
                 >
                   <button
@@ -225,7 +256,7 @@ export const TaskSidebar: React.FC<TaskSidebarProps> = ({
                     className={`flex-1 flex items-center justify-between px-3 py-2 text-sm transition-colors ${
                       isActive
                         ? getActiveTextClass(item.color)
-                        : 'text-gray-700 hover:text-gray-900'
+                        : 'text-gray-700 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white'
                     }`}
                   >
                     <div className="flex items-center gap-3">
@@ -234,7 +265,7 @@ export const TaskSidebar: React.FC<TaskSidebarProps> = ({
                     </div>
                     <div className="text-right">
                       <div className="text-xs font-medium">{total}</div>
-                      <div className="text-xs text-gray-500">{completionRate}%</div>
+                      <div className="text-xs text-gray-500 dark:text-gray-400">{completionRate}%</div>
                     </div>
                   </button>
                   
@@ -245,7 +276,7 @@ export const TaskSidebar: React.FC<TaskSidebarProps> = ({
                       className={`p-2 rounded-r-lg transition-colors ${
                         isActive
                           ? getActiveButtonClass(item.color)
-                          : 'text-gray-400 hover:text-gray-600 hover:bg-gray-100'
+                          : 'text-gray-400 dark:text-gray-500 hover:text-gray-600 dark:hover:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700'
                       }`}
                       title={`查看${item.label}详情`}
                     >
